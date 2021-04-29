@@ -11,6 +11,7 @@
   <body>
 	  <button onclick = "start_stop()" id="start_stop_button"> Start </button> 
 	  <button onclick = "clearChart()" id="clearChart_button"> Clear Chart </button> 
+	  <input type="checkbox" id="updateChart" checked>Update Chart
 	  <div class="measurement_values">
 	    <div class="measurement">
 	      <h3>current</h3>
@@ -59,7 +60,9 @@
 					document.getElementById("power").innerHTML = measurement.power + "mW";
 					document.getElementById("supply_v").innerHTML = measurement.supply_voltage + "V";
 					document.getElementById("load_v").innerHTML = measurement.load_voltage + "V";
-					updateChart(measurement.current);
+					if (document.getElementById("updateChart").checked) {
+					  updateChart(measurement.current);
+					}
 				}
 			};
 			xmlhrq.open("GET", hrq_url, true);
