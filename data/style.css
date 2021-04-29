@@ -1,0 +1,51 @@
+/* 
+.measurement_values {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+*/
+body {
+    background: #FFFFFF;
+    color: #3b4252;
+    font-family: "Helvetica", "sans-serif";
+}
+
+.measurement_values {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+.measurement {
+/*
+    display: grid;
+    grid-template-rows: auto 1fr;
+*/
+    background: #eceff4;
+    text-align: center;
+    width: 400px;
+    margin: 1rem;
+    box-shadow: rgba(184, 194, 215, 0.35) 0px 3px 6px 0px;
+    border-radius: 0.5em;
+}
+h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 10px;
+    padding-top: 15px;
+    background: #8fbcbb;
+    border-radius: 0.5em 0.5em 0 0;
+}
+
+.measurement_value {
+    padding: 20px;
+    font-size: 4em;
+    font-family: "monospace";
+}
+
+.measurementCanvas {
+    position: relative;
+    height: 60vh;
+}

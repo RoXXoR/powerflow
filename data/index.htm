@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<html>
+
+  <head>
+   <link rel="stylesheet" href="style.css" />	  
+   <script src="chart.js"></script>
+   <title>powerFlow - INA219 current shunt</title>
+  </head>
+  <body>
+	  <button onclick = "start_stop()" id="start_stop_button"> Start </button> 
+	  <button onclick = "clearChart()" id="clearChart_button"> Clear Chart </button> 
+	  <div class="measurement_values">
+	    <div class="measurement">
+	      <h3>current</h3>
+	      <div id="current" class="measurement_value">0.00mA</div>
+	    </div>
+	    <div class="measurement">
+	      <h3>power</h3>
+	      <div id="power" class="measurement_value">0.00mW</div>
+	    </div>
+	    <div class="measurement">
+	      <h3>supply voltage</h3>
+	      <div id="supply_v" class="measurement_value">0.00V</div>
+	    </div>
+	    <div class="measurement">
+	      <h3>load voltage</h3>
+	      <div id="load_v" class="measurement_value">0.00V</div>
+	    </div>
+	  </div>
+	  <div class="measurementCanvas">
+	    <canvas id="measurementChart"></canvas>
+	  </div>
+	  <script>
+		let running = false;
+		let interval;
+ 		function updateChart(measurement) {
+			measurementChart.data.labels.push('');
+ 			measurementChart.data.datasets.forEach((dataset) => {
+		        	dataset.data.push(measurement);
+			});
+			measurementChart.update();
+		}
+	    	function clearChart() {
+			measurementChart.data.labels.length = 0;
+ 			measurementChart.data.datasets.forEach((dataset) => {
+		        	dataset.data.length = 0;
+			});
+			measurementChart.update();
+		}
+		function get_measurement() {
+			var xmlhrq = new XMLHttpRequest();
+			var hrq_url = "/measure?fmt=json&r=" + Math.random();
+			xmlhrq.onreadystatechange = function() {
+				if (xmlhrq.readyState == 4 && xmlhrq.status == 200) {
+					var measurement = JSON.parse(xmlhrq.responseText);
+					document.getElementById("current").innerHTML = measurement.current + "mA";
+					document.getElementById("power").innerHTML = measurement.power + "mW";
+					document.getElementById("supply_v").innerHTML = measurement.supply_voltage + "V";
+					document.getElementById("load_v").innerHTML = measurement.load_voltage + "V";
+					updateChart(measurement.current);
+				}
+			};
+			xmlhrq.open("GET", hrq_url, true);
+			xmlhrq.send();
+		}
+		function start_stop() {
+		  if (running) {
+		    clearInterval(interval);
+		    document.getElementById("start_stop_button").innerHTML = "Start";
+		    running = false;
+		  } else {
+	            interval = setInterval(get_measurement,1000);
+		    document.getElementById("start_stop_button").innerHTML = "Stop";
+		    running = true;
+		  }
+		}
+		var labels = [];
+ 	 	var data = {
+		  labels: labels,
+		  datasets: [{
+		    label: "Current",
+		    data: [],
+		    backgroundColor: '#5e81ac',
+    		    borderColor: '#5e81ac',
+		    cubicInterpolationMode: 'monotone',
+		    tension: 0.4,
+		    pointRadius: 0
+		  }]
+		};
+		const config = {
+  		  type: 'line',
+		  data,
+		  options: {maintainAspectRatio: false, responsive: true}
+		};
+		var measurementChart = new Chart(
+    		  document.getElementById('measurementChart'),
+    		  config
+		);  
+	  </script>
+  </body>
+</html>
